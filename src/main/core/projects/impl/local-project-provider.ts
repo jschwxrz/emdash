@@ -4,6 +4,7 @@ import type { Conversation } from '@shared/conversations';
 import { gitRefChangedChannel } from '@shared/events/gitEvents';
 import type { FetchError } from '@shared/git';
 import { bareRefName } from '@shared/git-utils';
+import { safePathSegment } from '@shared/path-name';
 import type { LocalProject } from '@shared/projects';
 import { makePtySessionId } from '@shared/ptySessionId';
 import { err, ok, type Result } from '@shared/result';
@@ -72,7 +73,7 @@ export async function createLocalProvider(project: LocalProject): Promise<LocalP
   const worktreeHost = await LocalWorktreeHost.create({
     allowedRoots: [project.path, worktreeDirectory],
   });
-  const worktreePoolPath = path.join(worktreeDirectory, project.name);
+  const worktreePoolPath = path.join(worktreeDirectory, safePathSegment(project.name, project.id));
 
   await worktreeHost.mkdirAbsolute(worktreePoolPath, { recursive: true });
 
